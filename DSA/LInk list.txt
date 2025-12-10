@@ -1,0 +1,354 @@
+# Linked Lists in JavaScript - Types & Examples
+
+## Overview of Linked Lists
+A linked list is a linear data structure where elements are stored in nodes, and each node points to the next node. Unlike arrays, linked lists don't have indices and allow dynamic memory allocation.
+
+## Types of Linked Lists
+
+### 1. **Singly Linked List**
+Each node points only to the next node.
+
+```javascript
+// Singly Linked List Implementation
+class Node {
+  constructor(data) {
+    this.data = data;  // Store the value
+    this.next = null;  // Pointer to next node (null by default)
+  }
+}
+
+class SinglyLinkedList {
+  constructor() {
+    this.head = null;  // First node in list (null if empty)
+    this.size = 0;     // Track number of nodes
+  }
+
+  // Add node at the end
+  append(data) {
+    const newNode = new Node(data);  // Create new node
+    
+    if (!this.head) {  // If list is empty
+      this.head = newNode;  // Set new node as head
+    } else {
+      let current = this.head;  // Start at head
+      while (current.next) {    // Traverse to last node
+        current = current.next;
+      }
+      current.next = newNode;  // Link last node to new node
+    }
+    this.size++;  // Increment size counter
+  }
+
+  // Insert at specific position
+  insertAt(data, index) {
+    if (index < 0 || index > this.size) {  // Validate index
+      return false;
+    }
+    
+    const newNode = new Node(data);
+    
+    if (index === 0) {  // Insert at beginning
+      newNode.next = this.head;  // New node points to current head
+      this.head = newNode;       // Update head to new node
+    } else {
+      let current = this.head;
+      let previous = null;
+      let count = 0;
+      
+      while (count < index) {  // Traverse to position
+        previous = current;
+        current = current.next;
+        count++;
+      }
+      
+      newNode.next = current;    // New node points to current node at index
+      previous.next = newNode;   // Previous node points to new node
+    }
+    
+    this.size++;
+    return true;
+  }
+
+  // Remove node at specific position
+  removeAt(index) {
+    if (index < 0 || index >= this.size || !this.head) {  // Validate
+      return null;
+    }
+    
+    let current = this.head;
+    
+    if (index === 0) {  // Remove head
+      this.head = current.next;  // Set head to next node
+    } else {
+      let previous = null;
+      let count = 0;
+      
+      while (count < index) {  // Traverse to position
+        previous = current;
+        current = current.next;
+        count++;
+      }
+      
+      previous.next = current.next;  // Bypass node to be removed
+    }
+    
+    this.size--;
+    return current.data;  // Return removed data
+  }
+
+  // Print all elements
+  print() {
+    let current = this.head;
+    let result = '';
+    while (current) {
+      result += current.data + ' -> ';
+      current = current.next;
+    }
+    result += 'null';
+    console.log(result);
+  }
+}
+
+// Example Usage
+const sll = new SinglyLinkedList();
+sll.append(10);     // List: 10 -> null
+sll.append(20);     // List: 10 -> 20 -> null
+sll.append(30);     // List: 10 -> 20 -> 30 -> null
+sll.insertAt(15, 1); // Insert 15 at index 1
+sll.print();         // Output: 10 -> 15 -> 20 -> 30 -> null
+sll.removeAt(2);     // Remove element at index 2 (20)
+sll.print();         // Output: 10 -> 15 -> 30 -> null
+```
+
+### 2. **Doubly Linked List**
+Each node points to both next and previous nodes.
+
+```javascript
+// Doubly Linked List Implementation
+class DoublyNode {
+  constructor(data) {
+    this.data = data;     // Store value
+    this.next = null;     // Pointer to next node
+    this.prev = null;     // Pointer to previous node
+  }
+}
+
+class DoublyLinkedList {
+  constructor() {
+    this.head = null;     // First node
+    this.tail = null;     // Last node
+    this.size = 0;        // Node count
+  }
+
+  // Add to end
+  append(data) {
+    const newNode = new DoublyNode(data);
+    
+    if (!this.head) {            // If list is empty
+      this.head = newNode;       // Set as head
+      this.tail = newNode;       // And tail
+    } else {
+      newNode.prev = this.tail;  // New node's prev points to current tail
+      this.tail.next = newNode;  // Current tail's next points to new node
+      this.tail = newNode;       // Update tail to new node
+    }
+    
+    this.size++;
+  }
+
+  // Add to beginning
+  prepend(data) {
+    const newNode = new DoublyNode(data);
+    
+    if (!this.head) {            // If list is empty
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;  // New node's next points to current head
+      this.head.prev = newNode;  // Current head's prev points to new node
+      this.head = newNode;       // Update head to new node
+    }
+    
+    this.size++;
+  }
+
+  // Print forward
+  printForward() {
+    let current = this.head;
+    let result = 'null <- ';
+    while (current) {
+      result += current.data + (current.next ? ' <-> ' : ' -> ');
+      current = current.next;
+    }
+    result += 'null';
+    console.log('Forward:  ' + result);
+  }
+
+  // Print backward
+  printBackward() {
+    let current = this.tail;
+    let result = 'null <- ';
+    while (current) {
+      result += current.data + (current.prev ? ' <-> ' : ' -> ');
+      current = current.prev;
+    }
+    result += 'null';
+    console.log('Backward: ' + result);
+  }
+}
+
+// Example Usage
+const dll = new DoublyLinkedList();
+dll.append(20);      // List: null <- 20 -> null
+dll.append(30);      // List: null <- 20 <-> 30 -> null
+dll.prepend(10);     // List: null <- 10 <-> 20 <-> 30 -> null
+dll.printForward();  // Output: Forward:  null <- 10 <-> 20 <-> 30 -> null
+dll.printBackward(); // Output: Backward: null <- 30 <-> 20 <-> 10 -> null
+```
+
+### 3. **Circular Linked List**
+The last node points back to the first node, forming a circle.
+
+```javascript
+// Circular Singly Linked List
+class CircularLinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.size = 0;
+  }
+
+  // Add to end
+  append(data) {
+    const newNode = new Node(data);  // Using same Node class as singly
+    
+    if (!this.head) {                // If list is empty
+      this.head = newNode;
+      this.tail = newNode;
+      newNode.next = this.head;      // Point to itself (circular)
+    } else {
+      newNode.next = this.head;      // New node points to head
+      this.tail.next = newNode;      // Current tail points to new node
+      this.tail = newNode;           // Update tail
+    }
+    
+    this.size++;
+  }
+
+  // Print all elements
+  print() {
+    if (!this.head) {
+      console.log('List is empty');
+      return;
+    }
+    
+    let current = this.head;
+    let result = '';
+    let count = 0;
+    
+    do {  // Use do-while to ensure at least one iteration
+      result += current.data + ' -> ';
+      current = current.next;
+      count++;
+    } while (current !== this.head && count < this.size * 2); // Safety check
+    
+    result += '... (circular)';
+    console.log(result);
+  }
+}
+
+// Example Usage
+const cll = new CircularLinkedList();
+cll.append(1);    // List: 1 -> (back to 1)
+cll.append(2);    // List: 1 -> 2 -> (back to 1)
+cll.append(3);    // List: 1 -> 2 -> 3 -> (back to 1)
+cll.print();      // Output: 1 -> 2 -> 3 -> ... (circular)
+```
+
+### 4. **Doubly Circular Linked List**
+Combines features of doubly and circular linked lists.
+
+```javascript
+// Doubly Circular Linked List
+class DoublyCircularLinkedList {
+  constructor() {
+    this.head = null;
+    this.size = 0;
+  }
+
+  // Add to end
+  append(data) {
+    const newNode = new DoublyNode(data);  // Using DoublyNode class
+    
+    if (!this.head) {                     // If list is empty
+      this.head = newNode;
+      newNode.next = newNode;             // Point to itself
+      newNode.prev = newNode;             // Point to itself
+    } else {
+      const tail = this.head.prev;        // Last node is head's prev
+      
+      newNode.next = this.head;           // New node points to head
+      newNode.prev = tail;                // New node's prev is old tail
+      tail.next = newNode;                // Old tail points to new node
+      this.head.prev = newNode;           // Head's prev points to new node
+    }
+    
+    this.size++;
+  }
+
+  // Print forward
+  print() {
+    if (!this.head) {
+      console.log('List is empty');
+      return;
+    }
+    
+    let current = this.head;
+    let result = '... <- ';
+    
+    do {
+      result += current.data + ' <-> ';
+      current = current.next;
+    } while (current !== this.head);
+    
+    result += '... (circular)';
+    console.log(result);
+  }
+}
+
+// Example Usage
+const dcll = new DoublyCircularLinkedList();
+dcll.append(100);  // List: ... <- 100 <-> ... (circular)
+dcll.append(200);  // List: ... <- 100 <-> 200 <-> ... (circular)
+dcll.append(300);  // List: ... <- 100 <-> 200 <-> 300 <-> ... (circular)
+dcll.print();      // Output: ... <- 100 <-> 200 <-> 300 <-> ... (circular)
+```
+
+## Comparison Table
+
+| Type | Direction | Memory | Use Cases |
+|------|-----------|--------|-----------|
+| **Singly Linked** | Forward only | Less | Stacks, simple lists |
+| **Doubly Linked** | Forward & Backward | More | Browser history, undo/redo |
+| **Circular** | Circular forward | Medium | Round-robin scheduling |
+| **Doubly Circular** | Circular both ways | Most | Music playlists, game loops |
+
+## Key Operations Complexity
+
+| Operation | Singly | Doubly | Circular |
+|-----------|--------|--------|----------|
+| Insert at head | O(1) | O(1) | O(1) |
+| Insert at tail | O(n) | O(1) | O(1) |
+| Delete at head | O(1) | O(1) | O(1) |
+| Delete at tail | O(n) | O(1) | O(n) |
+| Search | O(n) | O(n) | O(n) |
+| Traverse backward | Not possible | O(n) | O(n) |
+
+## Practical Applications
+
+1. **Singly Linked List**: Implemented in stack, queue, hash table chaining
+2. **Doubly Linked List**: Browser back/forward navigation, music player playlists
+3. **Circular Linked List**: Round-robin scheduling, multiplayer games
+4. **Doubly Circular**: Advanced navigation systems, complex game mechanics
+
+Linked lists are fundamental data structures that form the basis for more complex structures like trees and graphs. Their dynamic nature makes them ideal for scenarios where frequent insertions/deletions are required.
