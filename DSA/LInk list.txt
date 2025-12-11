@@ -351,4 +351,553 @@ dcll.print();      // Output: ... <- 100 <-> 200 <-> 300 <-> ... (circular)
 3. **Circular Linked List**: Round-robin scheduling, multiplayer games
 4. **Doubly Circular**: Advanced navigation systems, complex game mechanics
 
+
 Linked lists are fundamental data structures that form the basis for more complex structures like trees and graphs. Their dynamic nature makes them ideal for scenarios where frequent insertions/deletions are required.
+
+
+
+***************************************************************************
+
+// 1. Creating a Node class
+class Node {
+    constructor(value) {          // 2. constructor runs when making a new Node
+        this.value = value;       // 3. store the data/value inside the node
+        this.next = null;         // 4. next pointer initially points to nothing
+    }
+}
+
+// 5. Creating LinkedList class
+class LinkedList {
+    constructor() {
+        this.head = null;         // 6. start of the list (empty at beginning)
+    }
+
+    // 7. Insert a new node at the end of the list
+    insert(value) {
+        const newNode = new Node(value); // 8. create a new node with given value
+
+        if (!this.head) {         // 9. if list is empty
+            this.head = newNode;  // 10. new node becomes head
+            return;               // 11. exit function
+        }
+
+        let current = this.head;  // 12. start from the first node
+
+        while (current.next !== null) { // 13. loop until last node
+            current = current.next;     // 14. move to next node
+        }
+
+        current.next = newNode;         // 15. attach new node at end
+    }
+
+    // 16. Print all values in the list
+    print() {
+        let current = this.head;        // 17. start from head
+
+        while (current) {               // 18. loop until current becomes null
+            console.log(current.value); // 19. print node value
+            current = current.next;     // 20. move to next node
+        }
+    }
+}
+
+// 21. Create a linked list
+const list = new LinkedList();
+
+// 22. Insert some values
+list.insert(10);
+list.insert(20);
+list.insert(30);
+
+// 23. Print the list
+list.print();
+
+
+
+***************************************************************************
+
+// Node class (each block in the linked list)
+class Node {
+    constructor(value) {
+        this.value = value;   // data stored
+        this.next = null;     // pointer to next node
+    }
+}
+
+// LinkedList class
+class LinkedList {
+    constructor() {
+        this.head = null;     // first node
+    }
+
+    // 1️⃣ Insert at Beginning
+    insertAtBeginning(value) {
+        const newNode = new Node(value); 
+        newNode.next = this.head;  // new node points to previous head
+        this.head = newNode;       // update head to new node
+    }
+
+    // 2️⃣ Insert at End
+    insertAtEnd(value) {
+        const newNode = new Node(value);
+
+        if (!this.head) {         // no nodes → new node becomes head
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {    // go to last node
+            current = current.next;
+        }
+        current.next = newNode;   // attach at end
+    }
+
+    // 3️⃣ Delete Node by Value
+    delete(value) {
+        if (!this.head) return;                // empty list
+
+        // Case 1: delete head
+        if (this.head.value === value) {
+            this.head = this.head.next;        // move head
+            return;
+        }
+
+        // Case 2: delete middle/end node
+        let current = this.head;
+        while (current.next && current.next.value !== value) {
+            current = current.next;
+        }
+
+        if (current.next) {                    // value found
+            current.next = current.next.next;
+        }
+    }
+
+    // 4️⃣ Search Node by Value
+    search(value) {
+        let current = this.head;
+
+        while (current) {
+            if (current.value === value) return current; // return node
+            current = current.next;
+        }
+        return null;   // value not found
+    }
+
+    // 5️⃣ Reverse Entire Linked List
+    reverse() {
+        let prev = null;
+        let current = this.head;
+        let next = null;
+
+        while (current) {
+            next = current.next;   // store next node
+            current.next = prev;   // reverse pointer
+            prev = current;        // move prev forward
+            current = next;        // move current forward
+        }
+
+        this.head = prev;          // new head
+    }
+
+    // 6️⃣ Print Nodes (ref + val)
+    print() {
+        let current = this.head;
+
+        while (current) {
+            console.log({
+                ref: current,     // reference (address-like)
+                value: current.value
+            });
+            current = current.next;
+        }
+    }
+}
+
+
+// -----------------------
+// TESTING THE LINKED LIST
+// -----------------------
+
+const list = new LinkedList();
+
+// Insert at beginning
+list.insertAtBeginning(30);
+list.insertAtBeginning(20);
+list.insertAtBeginning(10);
+
+// Insert at end
+list.insertAtEnd(40);
+list.insertAtEnd(50);
+
+// Print list (ref + value)
+console.log("Initial List:");
+list.print();
+
+// Search for value
+console.log("\nSearching for 40:");
+console.log(list.search(40));
+
+// Delete node
+list.delete(20);
+console.log("\nAfter Deleting 20:");
+list.print();
+
+// Reverse list
+list.reverse();
+console.log("\nAfter Reversing:");
+list.print();
+
+***************************************************************************
+
+// Node class
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+// Circular Linked List
+class CircularLinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    // 1️⃣ Insert at Beginning
+    insertAtBeginning(value) {
+        const newNode = new Node(value);
+
+        if (!this.head) {
+            this.head = newNode;
+            newNode.next = newNode;     // circular link to itself
+            return;
+        }
+
+        let current = this.head;
+        while (current.next !== this.head) {   // go to last node
+            current = current.next;
+        }
+
+        newNode.next = this.head;   // new node points to old head
+        current.next = newNode;     // last node points to new node
+        this.head = newNode;        // new node becomes head
+    }
+
+    // 2️⃣ Insert at End
+    insertAtEnd(value) {
+        const newNode = new Node(value);
+
+        if (!this.head) {
+            this.head = newNode;
+            newNode.next = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next !== this.head) {
+            current = current.next;
+        }
+
+        current.next = newNode;
+        newNode.next = this.head;   // circle closed
+    }
+
+    // 3️⃣ Delete Node by Value
+    delete(value) {
+        if (!this.head) return;
+
+        let current = this.head;
+        let prev = null;
+
+        // Case 1: Deleting head node
+        if (current.value === value) {
+
+            // Only 1 node
+            if (current.next === this.head) {
+                this.head = null;  // list becomes empty
+                return;
+            }
+
+            // Find last node to fix links
+            while (current.next !== this.head) {
+                current = current.next;
+            }
+
+            current.next = this.head.next; // last → new head
+            this.head = this.head.next;    // move head
+            return;
+        }
+
+        // Case 2: delete non-head node
+        prev = this.head;
+        current = this.head.next;
+
+        while (current !== this.head && current.value !== value) {
+            prev = current;
+            current = current.next;
+        }
+
+        if (current.value === value) {
+            prev.next = current.next;  // bypass the node
+        }
+    }
+
+    // 4️⃣ Search a Value
+    search(value) {
+        if (!this.head) return null;
+
+        let current = this.head;
+
+        do {
+            if (current.value === value) return current;
+            current = current.next;
+        } while (current !== this.head);
+
+        return null; // not found
+    }
+
+    // 5️⃣ Print (ref + value)
+    print() {
+        if (!this.head) {
+            console.log("List is empty");
+            return;
+        }
+
+        let current = this.head;
+
+        do {
+            console.log({
+                ref: current,
+                value: current.value
+            });
+            current = current.next;
+        } while (current !== this.head);
+    }
+}
+
+
+// --------------------
+// TESTING THE LIST
+// --------------------
+
+const cll = new CircularLinkedList();
+
+cll.insertAtBeginning(30);
+cll.insertAtBeginning(20);
+cll.insertAtBeginning(10);
+
+cll.insertAtEnd(40);
+cll.insertAtEnd(50);
+
+console.log("Initial Circular List:");
+cll.print();
+
+console.log("\nSearching for 40:");
+console.log(cll.search(40));
+
+console.log("\nDeleting 20:");
+cll.delete(20);
+cll.print();
+
+console.log("\nRe-check Circular Loop (stop after few nodes):");
+let temp = cll.head;
+for (let i = 0; i < 10; i++) {
+    console.log(temp.value);
+    temp = temp.next;
+}
+
+
+Initial Circular List:
+{ ref: Node { value: 10, next: Node }, value: 10 }
+{ ref: Node { value: 20, next: Node }, value: 20 }
+{ ref: Node { value: 30, next: Node }, value: 30 }
+{ ref: Node { value: 40, next: Node }, value: 40 }
+{ ref: Node { value: 50, next: Node }, value: 50 }
+
+Searching for 40:
+Node { value: 40, next: Node }
+
+Deleting 20:
+{ ref: Node { value: 10, next: Node }, value: 10 }
+{ ref: Node { value: 30, next: Node }, value: 30 }
+{ ref: Node { value: 40, next: Node }, value: 40 }
+{ ref: Node { value: 50, next: Node }, value: 50 }
+
+
+
+***************************************************************************
+
+
+
+// Node for Doubly Circular Linked List
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null
+        this.prev = null;
+    }
+}
+
+class DoublyCircularLinkedList {
+    constructor() {
+        this.head = null;
+    }
+
+    // 1️⃣ Insert at Beginning
+    insertAtBeginning(value) {
+        const newNode = new Node(value);
+
+        // Case: list empty
+        if (!this.head) {
+            newNode.next = newNode;  // circular link to itself
+            newNode.prev = newNode;
+            this.head = newNode;
+            return;
+        }
+
+        const last = this.head.prev; // last node of circular DLL
+
+        newNode.next = this.head;    // new → old head
+        newNode.prev = last;         // new → last
+
+        last.next = newNode;         // last → new
+        this.head.prev = newNode;    // head.prev → new
+
+        this.head = newNode;         // update head
+    }
+
+    // 2️⃣ Insert at End
+    insertAtEnd(value) {
+        const newNode = new Node(value);
+
+        if (!this.head) {
+            newNode.next = newNode;
+            newNode.prev = newNode;
+            this.head = newNode;
+            return;
+        }
+
+        const last = this.head.prev;
+
+        newNode.next = this.head;  // new → head
+        newNode.prev = last;       // new → last
+
+        last.next = newNode;       // last → new
+        this.head.prev = newNode;  // head.prev → new
+    }
+
+    // 3️⃣ Delete Node By Value
+    delete(value) {
+        if (!this.head) return;
+
+        let current = this.head;
+
+        // Loop (circular)
+        do {
+            if (current.value === value) {
+
+                // If only 1 node
+                if (current.next === current && current.prev === current) {
+                    this.head = null;
+                    return;
+                }
+
+                const prevNode = current.prev;
+                const nextNode = current.next;
+
+                prevNode.next = nextNode;
+                nextNode.prev = prevNode;
+
+                // If deleting head
+                if (current === this.head) {
+                    this.head = nextNode;
+                }
+
+                return;
+            }
+
+            current = current.next;
+
+        } while (current !== this.head);
+    }
+
+    // 4️⃣ Search Value
+    search(value) {
+        if (!this.head) return null;
+
+        let current = this.head;
+
+        do {
+            if (current.value === value) return current;
+            current = current.next;
+        } while (current !== this.head);
+
+        return null; // not found
+    }
+
+    // 5️⃣ Print All Nodes (ref + value + prev + next)
+    print() {
+        if (!this.head) {
+            console.log("List is empty");
+            return;
+        }
+
+        let current = this.head;
+
+        do {
+            console.log({
+                ref: current,
+                value: current.value,
+                prev: current.prev.value,
+                next: current.next.value
+            });
+            current = current.next;
+        } while (current !== this.head);
+    }
+}
+
+
+// --------------------
+// TESTING THE LIST
+// --------------------
+
+const dcll = new DoublyCircularLinkedList();
+
+dcll.insertAtBeginning(30);
+dcll.insertAtBeginning(20);
+dcll.insertAtBeginning(10);
+
+dcll.insertAtEnd(40);
+dcll.insertAtEnd(50);
+
+console.log("Initial Doubly Circular Linked List:");
+dcll.print();
+
+console.log("\nSearching for 40:");
+console.log(dcll.search(40));
+
+console.log("\nDeleting 20:");
+dcll.delete(20);
+dcll.print();
+
+console.log("\nDeleting head (10):");
+dcll.delete(10);
+dcll.print();
+
+Initial Doubly Circular Linked List:
+{ ref: Node, value: 10, prev: 50, next: 20 }
+{ ref: Node, value: 20, prev: 10, next: 30 }
+{ ref: Node, value: 30, prev: 20, next: 40 }
+{ ref: Node, value: 40, prev: 30, next: 50 }
+{ ref: Node, value: 50, prev: 40, next: 10 }
+
+Searching for 40:
+Node { value: 40, next: Node, prev: Node }
+
+Deleting 20:
+{ ref: Node, value: 10, prev: 50, next: 30 }
+{ ref: Node, value: 30, prev: 10, next: 40 }
+{ ref: Node, value: 40, prev: 30, next: 50 }
+{ ref: Node, value: 50, prev: 40, next: 10 }
